@@ -1,5 +1,6 @@
 version: "3"
 services:
+  ### Nginx Web Container #######################################
   nginx:
     image: nginx:${NGINX_VERSION}
     ports:
@@ -14,14 +15,17 @@ services:
     networks:
       - default
 
+  ### PHP-FPM Container #######################################
   php72:
     build:
-      context: .
+      context: ./php-fpm
       args:
         PHP_VERSION: ${PHP72_VERSION}
         PHP_XDEBUG: ${PHP72_XDEBUG}
         PHP_SWOOLE: ${PHP72_SWOOLE}
         PHP_REDIS: ${PHP72_REDIS}
+        PHP_MEMCACHED: ${php72_MEMCACHED}
+        PHP_IMAGICK: ${php72_IMAGICK}
         REPLACE_SOURCE_LIST: ${REPLACE_SOURCE_LIST}
     volumes:
       - ${SOURCE_DIR}:/var/www/html/:rw
@@ -33,44 +37,87 @@ services:
     networks:
       - default
 
-  php56:
+#  php56:
+#    build:
+#      context: ./php-fpm
+#      args:
+#        PHP_VERSION: ${PHP56_VERSION}
+#        PHP_XDEBUG: ${PHP56_XDEBUG}
+#        PHP_SWOOLE: ${PHP56_SWOOLE}
+#        PHP_REDIS: ${PHP56_REDIS}
+#        PHP_MEMCACHED: ${php56_MEMCACHED}
+#        PHP_IMAGICK: ${php56_IMAGICK}
+#        REPLACE_SOURCE_LIST: ${REPLACE_SOURCE_LIST}
+#    volumes:
+#      - ${SOURCE_DIR}:/var/www/html/:rw
+#      - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+#      - ${PHP56_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
+#    restart: always
+#    cap_add:
+#      - SYS_PTRACE
+#    networks:
+#      - default
+
+  ### PHP7.2-CROND Container #######################################
+  php72-crond:
     build:
-      context: .
+      context: ./php-crond
       args:
-        PHP_VERSION: ${PHP56_VERSION}
-        PHP_XDEBUG: ${PHP56_XDEBUG}
-        PHP_SWOOLE: ${PHP56_SWOOLE}
-        PHP_REDIS: ${PHP56_REDIS}
-        REPLACE_SOURCE_LIST: ${REPLACE_SOURCE_LIST}
+        PHP_CLI_VERSION: ${PHP72_CLI_VERSION}
+        CROND_CONF_FILE: ${CROND_CONF_FILE}
     volumes:
       - ${SOURCE_DIR}:/var/www/html/:rw
-      - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
-      - ${PHP56_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
-    restart: always
-    cap_add:
-      - SYS_PTRACE
+      - ${PHP72_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+      - ${CROND_LOG_DIR}:/var/log/cron:rw
     networks:
       - default
 
-  php54:
+
+  ### PHP5.6-CROND Container #######################################
+#  php56-crond:
+#      build:
+#        context: ./php-crond
+#        args:
+#          PHP_CLI_VERSION: ${PHP56_CLI_VERSION}
+#          CROND_CONF_FILE: ${CROND_CONF_FILE}
+#      volumes:
+#        - ${SOURCE_DIR}:/var/www/html/:rw
+#        - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+#        - ${CROND_LOG_DIR}:/var/log/cron:rw
+#      networks:
+#        - default
+
+  ### PHP7.2-SUPERVISOR Container #######################################
+  php72-supervisor:
     build:
-      context: .
+      context: ./php-supervisor
       args:
-        PHP_VERSION: ${PHP54_VERSION}
-        PHP_XDEBUG: ${PHP54_XDEBUG}
-        PHP_SWOOLE: ${PHP54_SWOOLE}
-        PHP_REDIS: ${PHP54_REDIS}
-        REPLACE_SOURCE_LIST: ${REPLACE_SOURCE_LIST}
+        PHP_CLI_VERSION: ${PHP72_CLI_VERSION}
     volumes:
       - ${SOURCE_DIR}:/var/www/html/:rw
-      - ${PHP54_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
-      - ${PHP54_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
-    restart: always
-    cap_add:
-      - SYS_PTRACE
+      - ${PHP72_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+      - ${SUPERVISOR_LOG_DIR}:/var/log/supervisor:rw
+      - ${SUPERVISOR_CONF_FILE}:/etc/supervisor/supervisord.conf:ro
+      - ${SUPERVISOR_CONF_DIR}:/etc/supervisor/conf.d/:rw
     networks:
       - default
 
+  ### PHP5.6-SUPERVISOR Container #######################################
+#  php56-supervisor:
+#      build:
+#        context: ./php-supervisor
+#        args:
+#          PHP_CLI_VERSION: ${PHP56_CLI_VERSION}
+#      volumes:
+#        - ${SOURCE_DIR}:/var/www/html/:rw
+#        - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+#        - ${SUPERVISOR_LOG_DIR}:/var/log/supervisor:rw
+#        - ${SUPERVISOR_CONF_FILE}:/etc/supervisor/supervisord.conf:ro
+#        - ${SUPERVISOR_CONF_DIR}:/etc/supervisor/conf.d/:rw
+#      networks:
+#        - default
+
+  ### Mysql Container #######################################
   mysql:
     image: mysql:${MYSQL_VERSION}
     ports:
@@ -84,6 +131,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
 
+  ### REDIS Container #######################################
   redis:
     image: redis:${REDIS_VERSION}
     ports:
@@ -95,7 +143,7 @@ services:
     networks:
       - default
     
-
+  ### Phpmyadmin Container #######################################
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     ports:
@@ -106,6 +154,7 @@ services:
       - PMA_HOST=mysql
       - PMA_PORT=3306
 
+  ### Redisadmin Container #######################################
   phpredisadmin:
     image: erikdubbelboer/phpredisadmin:latest
     ports:

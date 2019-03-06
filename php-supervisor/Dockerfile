@@ -1,0 +1,15 @@
+ARG PHP_CLI_VERSION
+FROM php:${PHP_CLI_VERSION}
+
+RUN apk update \
+	&& apk upgrade \
+	&& apk add supervisor \
+	&& rm -rf /var/cache/apk/*
+
+# Define mountable directories.
+VOLUME ["/etc/supervisor/conf.d", "/var/log/supervisor/"]
+
+# Define working directory.
+WORKDIR /etc/supervisor
+
+CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisor/supervisord.conf"]
