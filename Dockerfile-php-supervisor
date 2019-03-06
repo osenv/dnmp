@@ -7,7 +7,7 @@ RUN apk update \
 	&& rm -rf /var/cache/apk/*
 
 # Define mountable directories.
-VOLUME ["/etc/supervisor/conf.d", "/var/log/supervisor/"]
+VOLUME ["/etc/supervisor", "/var/log/supervisor/"]
 
 # Define working directory.
 WORKDIR /etc/supervisor

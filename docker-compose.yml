@@ -18,7 +18,8 @@ services:
   ### PHP-FPM Container #######################################
   php72:
     build:
-      context: ./php-fpm
+      context: .
+      dockerfile: Dockerfile-php-fpm
       args:
         PHP_VERSION: ${PHP72_VERSION}
         PHP_XDEBUG: ${PHP72_XDEBUG}
@@ -39,7 +40,8 @@ services:
 
 #  php56:
 #    build:
-#      context: ./php-fpm
+#      context: .
+#      dockerfile: Dockerfile-php-fpm
 #      args:
 #        PHP_VERSION: ${PHP56_VERSION}
 #        PHP_XDEBUG: ${PHP56_XDEBUG}
@@ -61,7 +63,8 @@ services:
   ### PHP7.2-CROND Container #######################################
   php72-crond:
     build:
-      context: ./php-crond
+      context: .
+      dockerfile: Dockerfile-php-crond
       args:
         PHP_CLI_VERSION: ${PHP72_CLI_VERSION}
         CROND_CONF_FILE: ${CROND_CONF_FILE}
@@ -76,7 +79,8 @@ services:
   ### PHP5.6-CROND Container #######################################
 #  php56-crond:
 #      build:
-#        context: ./php-crond
+#        context: .
+#        dockerfile: Dockerfile-php-crond
 #        args:
 #          PHP_CLI_VERSION: ${PHP56_CLI_VERSION}
 #          CROND_CONF_FILE: ${CROND_CONF_FILE}
@@ -90,7 +94,8 @@ services:
   ### PHP7.2-SUPERVISOR Container #######################################
   php72-supervisor:
     build:
-      context: ./php-supervisor
+      context: .
+      dockerfile: Dockerfile-php-supervisor
       args:
         PHP_CLI_VERSION: ${PHP72_CLI_VERSION}
     volumes:
@@ -106,6 +111,7 @@ services:
 #  php56-supervisor:
 #      build:
 #        context: ./php-supervisor
+#        dockerfile: Dockerfile-php-supervisor
 #        args:
 #          PHP_CLI_VERSION: ${PHP56_CLI_VERSION}
 #      volumes:

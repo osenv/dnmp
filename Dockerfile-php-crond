@@ -2,7 +2,7 @@ ARG PHP_CLI_VERSION
 FROM php:${PHP_CLI_VERSION}
 
 ARG CROND_CONF_FILE
-COPY ${CROND_CONF_FILE} /var/spool/cron/crontabs/
+COPY ${CROND_CONF_FILE} /var/spool/cron/crontabs/default
 
 RUN cat /var/spool/cron/crontabs/default >> /var/spool/cron/crontabs/root
 
