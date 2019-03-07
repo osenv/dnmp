@@ -1,5 +1,4 @@
-快速构建开发、测试、生产L(Alpine Linux ) + N(Nginx) + M(Mysql) + P(PHP) Docker 容器应用环境
-Dnmp（Docker + Nginx + MySQL + PHP7/5 + Redis + Crond + Queue）是一款全功能的 **LNMP一键安装程序**。
+快速构建开发、测试、生产（Docker + Nginx + MySQL + PHP7/5 + Redis + Crond + Queue）的容器环境（**LNMP一键安装程序**）。
 
 ![Demo Image](./docker.png)
 
