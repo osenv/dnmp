@@ -114,8 +114,7 @@ services:
       - ${MYSQL_DATA_DIR}:/var/lib/mysql/:rw
     restart: always
     networks:
-      app_net:
-        ipv4_address: ${MYSQL_HOST_IP}
+      - app_net
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
 
@@ -129,8 +128,7 @@ services:
     restart: always
     entrypoint: ["redis-server", "/etc/redis.conf"]
     networks:
-      app_net:
-        ipv4_address: ${REDIS_HOST_IP}
+      - app_net
     
   ### Phpmyadmin Container #######################################
   phpmyadmin:
