@@ -23,12 +23,10 @@ services:
       dockerfile: Dockerfile-php-fpm
       args:
         PHP_VERSION: ${PHP72_VERSION}
-        PHP_XDEBUG: ${PHP72_XDEBUG}
         PHP_SWOOLE: ${PHP72_SWOOLE}
         PHP_REDIS: ${PHP72_REDIS}
         PHP_MEMCACHED: ${php72_MEMCACHED}
         PHP_IMAGICK: ${php72_IMAGICK}
-        REPLACE_SOURCE_LIST: ${REPLACE_SOURCE_LIST}
     volumes:
       - ${SOURCE_DIR}:/var/www/html/:rw
       - ${PHP72_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
@@ -45,12 +43,10 @@ services:
 #      dockerfile: Dockerfile-php-fpm
 #      args:
 #        PHP_VERSION: ${PHP56_VERSION}
-#        PHP_XDEBUG: ${PHP56_XDEBUG}
 #        PHP_SWOOLE: ${PHP56_SWOOLE}
 #        PHP_REDIS: ${PHP56_REDIS}
 #        PHP_MEMCACHED: ${php56_MEMCACHED}
 #        PHP_IMAGICK: ${php56_IMAGICK}
-#        REPLACE_SOURCE_LIST: ${REPLACE_SOURCE_LIST}
 #    volumes:
 #      - ${SOURCE_DIR}:/var/www/html/:rw
 #      - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
@@ -69,6 +65,10 @@ services:
       args:
         PHP_CLI_VERSION: ${PHP72_CLI_VERSION}
         CROND_CONF_FILE: ${CROND_CONF_FILE}
+        PHP_SWOOLE: ${PHP72_SWOOLE}
+        PHP_REDIS: ${PHP72_REDIS}
+        PHP_MEMCACHED: ${php72_MEMCACHED}
+        PHP_IMAGICK: ${php72_IMAGICK}
     volumes:
       - ${SOURCE_DIR}:/var/www/html/:rw
       - ${PHP72_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
@@ -85,6 +85,10 @@ services:
 #        args:
 #          PHP_CLI_VERSION: ${PHP56_CLI_VERSION}
 #          CROND_CONF_FILE: ${CROND_CONF_FILE}
+#          PHP_SWOOLE: ${PHP56_SWOOLE}
+#          PHP_REDIS: ${PHP56_REDIS}
+#          PHP_MEMCACHED: ${php56_MEMCACHED}
+#          PHP_IMAGICK: ${php56_IMAGICK}
 #      volumes:
 #        - ${SOURCE_DIR}:/var/www/html/:rw
 #        - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
@@ -99,6 +103,10 @@ services:
       dockerfile: Dockerfile-php-supervisor
       args:
         PHP_CLI_VERSION: ${PHP72_CLI_VERSION}
+        PHP_SWOOLE: ${PHP72_SWOOLE}
+        PHP_REDIS: ${PHP72_REDIS}
+        PHP_MEMCACHED: ${php72_MEMCACHED}
+        PHP_IMAGICK: ${php72_IMAGICK}
     volumes:
       - ${SOURCE_DIR}:/var/www/html/:rw
       - ${PHP72_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
@@ -115,6 +123,10 @@ services:
 #        dockerfile: Dockerfile-php-supervisor
 #        args:
 #          PHP_CLI_VERSION: ${PHP56_CLI_VERSION}
+#          PHP_SWOOLE: ${PHP56_SWOOLE}
+#          PHP_REDIS: ${PHP56_REDIS}
+#          PHP_MEMCACHED: ${php56_MEMCACHED}
+#          PHP_IMAGICK: ${php56_IMAGICK}
 #      volumes:
 #        - ${SOURCE_DIR}:/var/www/html/:rw
 #        - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro

@@ -1,12 +1,10 @@
 ARG PHP_VERSION
 FROM php:${PHP_VERSION}
 
-ARG PHP_XDEBUG
 ARG PHP_SWOOLE
 ARG PHP_REDIS
 ARG PHP_MEMCACHED
 ARG PHP_IMAGICK
-ARG REPLACE_SOURCE_LIST
 
 # install base rely on
 # search by https://pkgs.alpinelinux.org/packages
