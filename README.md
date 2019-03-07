@@ -1,20 +1,26 @@
-DNMP（Docker + Nginx + MySQL + PHP7/5 + Redis）是一款全功能的**LNMP一键安装程序**。
+快速构建开发、测试、生产L(Alpine Linux ) + N(Nginx) + M(Mysql) + P(PHP) Docker 容器应用环境
+Dnmp（Docker + Nginx + MySQL + PHP7/5 + Redis + Crond + Queue）是一款全功能的 **LNMP一键安装程序**。
 
-**[[ENGLISH]](README-en.md)**
+![Demo Image](./docker.png)
 
-DNMP项目特点：
+项目在 [yeszao/dnmp](https://github.com/yeszao/dnmp) 基础上加以扩展，主要改动包括：
+- php-fpm 改成基于alpine的镜像构建，优点：占用空间小，易于扩展
+- 新增Crond容器 -- 基于 alpine制作的 php-cli 镜像构建
+- 新增Queue容器(使用supervisor守护进程) -- 基于 alpine制作的 php-cli 镜像构建
+- 新增php常用扩展
+
+项目特点：
 1. `100%`开源
 2. `100%`遵循Docker标准
-3. 支持**多版本PHP**共存，可任意切换（PHP5.4、PHP5.6、PHP7.2)
+3. 支持**多版本PHP**共存，可任意切换（PHP5.6、PHP7.2， 默认只安装php7.2, 如果需要5.6版本，去除docker-compose.yml注释后重新 build)
 4. 支持绑定**任意多个域名**
 5. 支持**HTTPS和HTTP/2**
-6. **PHP源代码、MySQL数据、配置文件、日志文件**都可在Host中直接修改查看
+6. **PHP源代码、MySQL数据、配置文件、日志文件**都在Host中直接修改查看
 7. 内置**完整PHP扩展安装**命令
-8. 默认安装`pdo_mysql`、`redis`、`xdebug`、`swoole`等常用热门扩展，拿来即用
-9. 带有phpmyadmin和phpredisadmin数据库在线管理程序
+8. 默认安装`pdo_mysql`、`redis`、`swoole`、`imagick`、`memcached`、`ldap`等常用热门扩展，拿来即用
+9. 带有 phpmyadmin 和 phpredisadmin 数据库在线管理程序
 10. 实际项目中应用，确保`100%`可用
 11. 一次配置，**Windows、Linux、MacOs**皆可用
-
 
 # 目录
 - [1.目录结构](#1目录结构)
@@ -38,68 +44,75 @@ DNMP项目特点：
 
 ```
 /
-├── conf                    配置文件目录
-│   ├── conf.d              Nginx用户站点配置目录
-│   ├── nginx.conf          Nginx默认配置文件
-│   ├── mysql.cnf           MySQL用户配置文件
-│   ├── php-fpm.conf        PHP-FPM配置文件（部分会覆盖php.ini配置）
-│   └── php.ini             PHP默认配置文件
-├── Dockerfile              PHP镜像构建文件
-├── extensions              PHP扩展源码包
-├── log                     Nginx日志目录
-├── mysql                   MySQL数据目录
-├── www                     PHP代码目录
-└── source.list             Debian源文件
+├── conf                        配置文件目录
+│   ├── conf.d                  Nginx用户站点配置目录
+│   ├── supervisor              Supervisor 子进程配置目录
+│   ├── crontab.conf            Crond 配置目录
+│   ├── supervisord.conf        Supervisor 主进程配置文件
+│   ├── nginx.conf              Nginx默认配置文件
+│   ├── mysql.cnf               MySQL用户配置文件
+│   ├── php-fpm.conf            PHP-FPM配置文件（部分会覆盖php.ini配置）
+│   └── php.ini                 PHP默认配置文件
+├── Dockerfile-php-fpm          PHP镜像构建文件
+├── Dockerfile-php-crond        cron镜像构建文件
+├── Dockerfile-php-supervisor   supervisor镜像构建文件
+├── log                         日志目录
+├── mysql                       MySQL数据目录
+├── www                         默认代码目录
+└── env.sample                  默认参考配置文件
 ```
-结构示意图：
-
-![Demo Image](./dnmp.png)
-
 
 ## 2.快速使用
 1. 本地安装`git`、`docker`和`docker-compose`。
 2. `clone`项目：
     ```
-    $ git clone https://github.com/yeszao/dnmp.git
+    $ git clone https://github.com/luzucheng59/dnmp.git
     ```
+
 3. 如果不是`root`用户，还需将当前用户加入`docker`用户组：
     ```
     $ sudo gpasswd -a ${USER} docker
     ```
+
 4. 拷贝环境配置文件`env.sample`为`.env`，启动：
     ```
     $ cd dnmp
     $ cp env.sample .env   # Windows系统请用copy命令，或者用编辑器打开后另存为.env
-    $ docker-compose up
+    $ vi .env # 可自行修改 SOURCE_DIR 的路径，支持绝对路径
+    $ docker-compose up -d
     ```
     注意：Windows安装360安全卫士的同学，请先将其退出，不然安装过程中可能Docker创建账号过程可能被拦截，导致启动时文件共享失败；
-5. 访问在浏览器中访问：
 
+5. 访问在浏览器中访问：
  - [http://localhost](http://localhost)： 默认*http*站点
  - [https://localhost](https://localhost)：自定义证书*https*站点，访问时浏览器会有安全提示，忽略提示访问即可
 
-两个站点使用同一PHP代码：`./www/localhost/index.php`。
 
-要修改端口、日志文件位置、以及是否替换source.list文件等，请修改.env文件，然后重新构建：
+要修改端口、日志文件位置等，请修改.env文件，然后重新构建：
+
 ```bash
-$ docker-compose build php54    # 重建单个服务
+$ docker-compose build php56    # 重建单个服务
 $ docker-compose build          # 重建全部服务
-
 ```
 
-
 ## 3.切换PHP版本
-默认情况下，我们同时创建 **PHP5.4、PHP5.6和PHP7.2** 三个PHP版本的容器，
+**默认情况下只启用PHP7.2，可自行开启支持PHP5.6**
+开启PHP5.6方法：
+```
+$ vi docker-compose.yml # 去除php56的注释
+$ docker-compose build php56    # 重建单个服务
+$ docker-compose up -d    # 重建单个服务
+```
 
 切换PHP仅需修改相应站点 Nginx 配置的`fastcgi_pass`选项，
 
-例如，示例的 [http://localhost](http://localhost) 用的是PHP5.4，Nginx 配置：
-```
-    fastcgi_pass   php54:9000;
-```
-要改用PHP7.2，修改为：
+例如，示例的 [http://localhost](http://localhost) 用的是PHP7.2，Nginx 配置：
 ```
     fastcgi_pass   php72:9000;
+```
+如果build时安装了php5.6，要改用PHP5.6时，修改为：
+```
+    fastcgi_pass   php56:9000;
 ```
 再 **重启 Nginx** 生效。
 ```bash
@@ -112,25 +125,22 @@ $ docker exec -it dnmp_nginx_1 nginx -s reload
 打开~/.bashrc，加上：
 ```bash
 alias dnginx='docker exec -it dnmp_nginx_1 /bin/sh'
-alias dphp72='docker exec -it dnmp_php72_1 /bin/bash'
-alias dphp56='docker exec -it dnmp_php56_1 /bin/bash'
-alias dphp54='docker exec -it dnmp_php54_1 /bin/bash'
+alias dphp72='docker exec -it dnmp_php72_1 /bin/sh'
+alias dphp56='docker exec -it dnmp_php56_1 /bin/sh'
 alias dmysql='docker exec -it dnmp_mysql_1 /bin/bash'
 alias dredis='docker exec -it dnmp_redis_1 /bin/sh'
+alias d72cron='docker exec -it dnmp_php72-crond_1 /bin/sh'
+alias d72super='docker exec -it dnmp_php72-supervisor_1 /bin/sh'
 ```
 
 ## 5.使用Log
-
-Log文件生成的位置依赖于conf下各log配置的值。
+Log文件生成的位置依赖于.env文件中配置的值和conf下各配置文件的设置。
 
 ### 5.1 Nginx日志
-Nginx日志是我们用得最多的日志，所以我们单独放在根目录`log`下。
-
 `log`会目录映射Nginx容器的`/var/log/nginx`目录，所以在Nginx配置文件中，需要输出log的位置，我们需要配置到`/var/log/nginx`目录，如：
 ```
 error_log  /var/log/nginx/nginx.localhost.error.log  warn;
 ```
-
 
 ### 5.2 PHP-FPM日志
 大部分情况下，PHP-FPM的日志都会输出到Nginx的日志中，所以不需要额外配置。
@@ -141,7 +151,6 @@ error_reporting(E_ALL);
 ini_set('error_reporting', 'on');
 ini_set('display_errors', 'on');
 ```
-
 如果确实需要，可按一下步骤开启（在容器中）。
 
 1. 进入容器，创建日志文件并修改权限：
@@ -242,9 +251,8 @@ Redis连接信息如下：
 
 ## 8.在正式环境中安全使用
 要在正式环境中使用，请：
-1. 在php.ini中关闭XDebug调试
-2. 增强MySQL数据库访问的安全策略
-3. 增强redis访问的安全策略
+1. 增强MySQL数据库访问的安全策略
+2. 增强redis访问的安全策略
 
 
 ## 9.常见问题
