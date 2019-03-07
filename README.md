@@ -215,7 +215,7 @@ log-error               = /var/lib/mysql/mysql.error.log
         "repositories": {
             "packagist": {
                 "type": "composer",
-                "url": "https://packagist.laravel-china.org"
+                "url": "https://packagist.phpcomposer.com"
             }
         }
     }
