@@ -2,7 +2,7 @@ version: "3"
 services:
   ### Nginx Web Container #######################################
   nginx:
-    image: nginx:${NGINX_VERSION}
+    image: ${NGINX_VERSION}
     ports:
       - "${NGINX_HTTP_HOST_PORT}:80"
       - "${NGINX_HTTPS_HOST_PORT}:443"
@@ -19,14 +19,7 @@ services:
   ### PHP-FPM Container #######################################
   php72:
     build:
-      context: .
-      dockerfile: Dockerfile-php-fpm
-      args:
-        PHP_VERSION: ${PHP72_VERSION}
-        PHP_SWOOLE: ${PHP72_SWOOLE}
-        PHP_REDIS: ${PHP72_REDIS}
-        PHP_MEMCACHED: ${php72_MEMCACHED}
-        PHP_IMAGICK: ${php72_IMAGICK}
+      image: ${PHP72_VERSION}
     volumes:
       - ${SOURCE_DIR}:/var/www/html/:rw
       - ${PHP72_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
@@ -39,14 +32,7 @@ services:
 
 #  php56:
 #    build:
-#      context: .
-#      dockerfile: Dockerfile-php-fpm
-#      args:
-#        PHP_VERSION: ${PHP56_VERSION}
-#        PHP_SWOOLE: ${PHP56_SWOOLE}
-#        PHP_REDIS: ${PHP56_REDIS}
-#        PHP_MEMCACHED: ${php56_MEMCACHED}
-#        PHP_IMAGICK: ${php56_IMAGICK}
+#      image: ${PHP56_VERSION}
 #    volumes:
 #      - ${SOURCE_DIR}:/var/www/html/:rw
 #      - ${PHP56_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
