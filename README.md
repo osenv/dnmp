@@ -2,6 +2,11 @@
 
 ![Demo Image](./docker.png)
 
+**依照本扩展安装docker环境，主机只需要安装以下扩展**
+- docker
+- docker-compose
+- composer - 参考下面的文档 [6.使用composer](#6使用composer)
+
 项目在 [yeszao/dnmp](https://github.com/yeszao/dnmp) 基础上加以扩展，主要改动包括：
 - php-fpm 改成基于alpine的自定义镜像构建，新增常用扩展；优点：占用空间小，节约单独扩展时间
 - 新增Crond容器
