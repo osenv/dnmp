@@ -7,11 +7,17 @@
 - docker-compose
 - composer - 参考下面的文档 [6.使用composer](#6使用composer)
 
-项目在 [yeszao/dnmp](https://github.com/yeszao/dnmp) 基础上加以扩展，主要改动包括：
-- php-fpm 改成基于alpine的自定义镜像构建，新增常用扩展；优点：占用空间小，节约单独扩展时间
-- 新增Crond容器
-- 新增Queue容器(使用supervisor守护进程)
-- 新增php常用扩展
+项目构建容器包括：
+- php-fpm (支持新增php5.6版本容器)
+- nginx
+- mysql
+- redis
+- crond （支持新增php5.6版本容器）
+- queue （支持新增php5.6版本容器）
+- phpmyadmin
+- phpredisadmin
+
+依赖自定义基础镜像
 - php-fpm 基础镜像：[luzucheng/php7.2.15-fpm-alpine-ext:latest](https://github.com/luzucheng59/docker-library/tree/master/php/7.2/fpm-alpine)
 - php-cli 基础镜像：[luzucheng/php7.2.15-cli-alpine-ext:latest](https://github.com/luzucheng59/docker-library/tree/master/php/7.2/cli-alpine)
 
@@ -265,6 +271,12 @@ Redis连接信息如下：
 ## 9.常见问题
 ### 9.1 如何在PHP代码中使用curl？
 参考这个issue：[https://github.com/yeszao/dnmp/issues/91](https://github.com/yeszao/dnmp/issues/91)
+
+
+## 参考文档
+- [yeszao/dnmp](https://github.com/yeszao/dnmp)
+- [gnulife/dphp](https://github.com/gnulife/dphp)
+- [bravist/lnmp-docker](https://github.com/bravist/lnmp-docker)
 
 ## License
 MIT
