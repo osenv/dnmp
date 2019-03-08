@@ -3,10 +3,12 @@
 ![Demo Image](./docker.png)
 
 项目在 [yeszao/dnmp](https://github.com/yeszao/dnmp) 基础上加以扩展，主要改动包括：
-- php-fpm 改成基于alpine的镜像构建，优点：占用空间小，易于扩展
-- 新增Crond容器 -- 基于 alpine制作的 php-cli 镜像构建
-- 新增Queue容器(使用supervisor守护进程) -- 基于 alpine制作的 php-cli 镜像构建
+- php-fpm 改成基于alpine的自定义镜像构建，新增常用扩展；优点：占用空间小，节约单独扩展时间
+- 新增Crond容器
+- 新增Queue容器(使用supervisor守护进程)
 - 新增php常用扩展
+- php-fpm 基础镜像：[luzucheng/php7.2.15-fpm-alpine-ext:latest](https://github.com/luzucheng59/docker-library/tree/master/php/7.2/fpm-alpine)
+- php-cli 基础镜像：[luzucheng/php7.2.15-cli-alpine-ext:latest](https://github.com/luzucheng59/docker-library/tree/master/php/7.2/cli-alpine)
 
 项目特点：
 1. `100%`开源
@@ -16,10 +18,11 @@
 5. 支持**HTTPS和HTTP/2**
 6. **PHP源代码、MySQL数据、配置文件、日志文件**都在Host中直接修改查看
 7. 内置**完整PHP扩展安装**命令
-8. 默认安装`pdo_mysql`、`redis`、`swoole`、`imagick`、`memcached`、`ldap`等常用热门扩展，拿来即用
+8. 默认安装`redis`、`swoole`、`imagick`、`memcached`、`ldap`、`events`等常用热门扩展，拿来即用
 9. 带有 phpmyadmin 和 phpredisadmin 数据库在线管理程序
-10. 实际项目中应用，确保`100%`可用
-11. 一次配置，**Windows、Linux、MacOs**皆可用
+10. Queue容器 新增`workerman`支持，可执行基于`sockets`的脚本
+11. 实际项目中应用，确保`100%`可用
+12. 一次配置，**Windows、Linux、MacOs**皆可用
 
 # 目录
 - [1.目录结构](#1目录结构)
@@ -52,7 +55,7 @@
 │   ├── mysql.cnf               MySQL用户配置文件
 │   ├── php-fpm.conf            PHP-FPM配置文件（部分会覆盖php.ini配置）
 │   └── php.ini                 PHP默认配置文件
-├── Dockerfile-php-fpm          PHP镜像构建文件
+├── docker-compose.yml          镜像构建配置文件
 ├── Dockerfile-php-crond        cron镜像构建文件
 ├── Dockerfile-php-supervisor   supervisor镜像构建文件
 ├── log                         日志目录
@@ -90,7 +93,7 @@
 要修改端口、日志文件位置等，请修改.env文件，然后重新构建：
 
 ```bash
-$ docker-compose build php56    # 重建单个服务
+$ docker-compose build php72    # 重建单个服务
 $ docker-compose build          # 重建全部服务
 ```
 
