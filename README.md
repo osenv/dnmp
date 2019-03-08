@@ -2,12 +2,13 @@
 
 ![Demo Image](./docker.png)
 
-**依照本扩展安装docker环境，主机只需要安装以下扩展**
+## 使用说明
+### **依照本扩展安装docker环境，主机只需要安装以下扩展**
 - docker
 - docker-compose
 - composer - 参考下面的文档 [6.使用composer](#6使用composer)
 
-项目构建容器包括：
+### 项目构建容器包括：
 - php-fpm (支持新增php5.6版本容器)
 - nginx
 - mysql
@@ -17,11 +18,11 @@
 - phpmyadmin
 - phpredisadmin
 
-依赖自定义基础镜像
+### 依赖自定义基础镜像
 - php-fpm 基础镜像：[luzucheng/php7.2.15-fpm-alpine-ext:latest](https://github.com/luzucheng59/docker-library/tree/master/php/7.2/fpm-alpine)
 - php-cli 基础镜像：[luzucheng/php7.2.15-cli-alpine-ext:latest](https://github.com/luzucheng59/docker-library/tree/master/php/7.2/cli-alpine)
 
-项目特点：
+### 项目特点：
 1. `100%`开源
 2. `100%`遵循Docker标准
 3. 支持**多版本PHP**共存，可任意切换（PHP5.6、PHP7.2， 默认只安装php7.2, 如果需要5.6版本，去除docker-compose.yml注释后重新 build)
